@@ -57,7 +57,7 @@ class ImageGenerator:
 
         return image, width, height
 
-    def new_image(self, prompt, width, height, negative_prompt=""):
+    def new_image(self, prompt, width, height, negative_prompt="", **kwargs):
         width = int(width)
         height = int(height)
         _, _, w, h = self.adjust_size(width, height)
@@ -65,7 +65,7 @@ class ImageGenerator:
         image = gen.images[0]
         return image
 
-    def image_to_image(self, prompt, width, height, init_image, negative_prompt=""):
+    def image_to_image(self, prompt, width, height, init_image, negative_prompt="", **kwargs):
         width = int(width)
         height = int(height)
         im = PIL.Image.open(BytesIO(base64.b64decode(init_image))).convert('RGB')
@@ -74,7 +74,7 @@ class ImageGenerator:
         image = gen.images[0]
         return image
 
-    def outpainting(self, prompt, width, height, init_image, strength=0.2, negative_prompt=""):
+    def outpainting(self, prompt, width, height, init_image, strength=0.2, negative_prompt="", **kwargs):
         width = int(width)
         height = int(height)
         im = PIL.Image.open(BytesIO(base64.b64decode(init_image)))
