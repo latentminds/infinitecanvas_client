@@ -23,7 +23,7 @@ class ImageGenerator:
             safety_checker=None
         ).to(device)
 
-    def get_img_mask(im):
+    def get_img_mask(self, im):
         im = im.convert('RGBA')
         sel_buffer = np.array(im)
         img = sel_buffer[:, :, 0:3]
@@ -70,7 +70,7 @@ class ImageGenerator:
         height = int(height)
         im = PIL.Image.open(BytesIO(base64.b64decode(init_image))).convert('RGB')
         init_image, _, _ = self.adjust_image(im, width, height)
-        gen = self.pipe.img2img(prompt=prompt, negative_prompt=negative_prompt, init_image=init_image, strength=0.75, guidance_scale=7.5)
+        gen = self.pipe.img2img(prompt=prompt, negative_prompt=negative_prompt, image=init_image, strength=0.75, guidance_scale=7.5)
         image = gen.images[0]
         return image
 
@@ -89,7 +89,7 @@ class ImageGenerator:
         noise, width, height = self.adjust_image(noise, width, height)
         mask, width, height  = self.adjust_image(mask,  width, height)
 
-        gen = self.pipe.inpaint(prompt=prompt, negative_prompt=negative_prompt,init_image=noise, mask_image=mask, strength=0.75)
+        gen = self.pipe.inpaint(prompt=prompt, negative_prompt=negative_prompt, image=noise, mask_image=mask, strength=0.75)
         generated = gen.images[0]
 
         ga = np.array(generated.convert('RGBA'))
@@ -117,7 +117,7 @@ class ImageGenerator:
         return i
 
     # image inpainting techniques ()
-    def edge_pad(img, mask, mode=1):
+    def edge_pad(self, img, mask, mode=1):
         mask = 255 - mask
         if mode == 0:
             nmask = mask.copy()
@@ -181,7 +181,7 @@ class ImageGenerator:
             )
         return img
 
-    def mean_fill(img, mask):
+    def mean_fill(self, img, mask):
         avg = np.int_(img.sum(axis=0).sum(axis=0) / ((img > 0).sum() / 3))
         img[mask < 1] = avg
         return img
